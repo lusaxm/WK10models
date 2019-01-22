@@ -303,11 +303,11 @@ with sess:
     for i in range(FLAGS.max_steps):
         feed_dict_to_use[is_training_placeholder] = True
 
-       # gs, _ = sess.run([global_step, train_step], feed_dict=feed_dict_to_use)
-        gs, loss, summary_string = sess.run([global_step, cross_entropy_loss, merged_summary_op],
-                                            feed_dict=feed_dict_to_use)
-        if gs % 10 == 0:
-            #gs, loss, summary_string = sess.run([global_step, cross_entropy_loss, merged_summary_op], feed_dict=feed_dict_to_use)
+        gs, _ = sess.run([global_step, train_step], feed_dict=feed_dict_to_use)
+        #gs, loss, summary_string = sess.run([global_step, cross_entropy_loss, merged_summary_op],
+                                             #feed_dict=feed_dict_to_use)
+        if (i+1) % 10 == 0:
+            gs, loss, summary_string = sess.run([global_step, cross_entropy_loss, merged_summary_op], feed_dict=feed_dict_to_use)
             logging.debug("step {0} Current Loss: {1} ".format(gs, loss))
             end = time.time()
             logging.debug("[{0:.2f}] imgs/s".format(10 * batch_size / (end - start)))
@@ -315,11 +315,11 @@ with sess:
 
             summary_string_writer.add_summary(summary_string, i)
             print('lusa1-10')
-            if gs % 100 == 0:
+            if (i+1) % 100 == 0:
                 save_path = saver.save(sess, os.path.join(log_folder, "model.ckpt"), global_step=gs)
                 logging.debug("Model saved in file: %s" % save_path)
                 print('lusa1-100')
-            if gs % 200 == 0:
+            if (i+1) % 200 == 0:
                 eval_folder = os.path.join(FLAGS.output_dir, 'eval')
                 if not os.path.exists(eval_folder):
                     os.makedirs(eval_folder)
